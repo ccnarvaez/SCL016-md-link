@@ -15,7 +15,6 @@
     "test": "jest --coverage",
     "start": "serve src/"
   },
-  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ccnarvaez/SCL016-md-link.git"
@@ -27,6 +26,7 @@
   },
   "homepage": "https://github.com/ccnarvaez/SCL016-md-link#readme",
   "dependencies": {
+    "axios": "^0.21.1",
     "inquirer": "^8.0.0",
     "markdown-it": "^12.0.6"
   },

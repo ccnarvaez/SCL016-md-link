@@ -1,6 +1,50 @@
-// Required
+// Here, i can read file line by line
 const fs = require('fs');
-const readline = require('readline');
+const input = fs.createReadStream('./README.md');
+
+global.linesArray = [];
+
+const rl = require('readline').createInterface({
+    input: input,
+    terminal: false
+});
+
+
+rl.on('line', (line) => {
+    linesArray.push(line);
+});
+
+rl.on('close', () => {
+    const anyLink = global.linesArray;
+    
+    // Reference video https://www.youtube.com/watch?v=W7S_Vmq0GSs
+    // According to the video, the match method show you the groups declared into the regular expression
+    // So, to separate a markdown link, wrote in the format [text](url), we are going to take this property 
+    const regExpTxt = /\[([\w\s\d\-]+)\]/g;
+    const regExpUrl = /\(([^\)]+)\)/g;
+
+    anyLink.forEach((line)=>{
+        //Capture text in markdown structure
+        const text = line.match(regExpTxt);
+        //console.log('text:' + text); 
+        const href = line.match(regExpUrl);
+        //console.log('href:' +href);   
+        const axios = require('axios');
+        axios.get(href.toString()).then((result)=>{
+            console.log(result);
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+    })
+        
+});
+    
+
+
+
+
+// MAYBE USEFUL TO DIRECTORIES---
 // Here, i can read files contented inside the actual location
 // const files = fs.readdir('./', (error, files)=>{
 //     if (error){
@@ -17,35 +61,3 @@ const readline = require('readline');
     
 // });
 
-// Here, i can read file line by line
-
-const input = fs.createReadStream('./README.md');
-const rl = require('readline').createInterface({
-    input: input,
-    terminal: false
-});
-
-let singleLine ='';
-rl.on('line', (line) => {
-    singleLine = line;
-    console.log('[L]'+''+singleLine);
-    console.log(typeof singleLine);
-});
-
-
-// 2. Identify url's inside
-
-
-// Regular expressions allows you to identify patterns. In this case, the regular expression was wrote in order to identify links structure
-const regularExpressions = () => {
-    const anyLink = 'www.algo.com';
-    const regularExp = /(http:\/\/)?(www\.)[a-zA-Z0-9.-]+\.(com|net|cl)/;
-        if (regularExp.test(anyLink)){
-            console.log('es una URL');
-        }else{
-            console.log('NO es una URL');
-        }  
-}
-regularExpressions();
-
-  
