@@ -1,13 +1,13 @@
-module.exports = (path) => {
-    return mdLinks(path);
+module.exports = (path, options) => {
+    return mdLinks(path, options);
 }
 
 // Global scope variables
 global.linesArray = [];
 global.texts = [];
 global.hrefs = [];
-global.response = [];
 global.statusCod = [];
+global.status = [];
 
 
 // Regular expressions to identify text, url's and status digits
@@ -21,7 +21,7 @@ const readline = require('readline');
 const https = require('https');
 
 
-const mdLinks = (path) => {
+const mdLinks = (path, options) => {
 
     return new Promise ((resolve,reject)=>{
         const input= fs.createReadStream(path);
@@ -37,50 +37,68 @@ const mdLinks = (path) => {
         rl.on('close', () => {
             linesArray.forEach((line) => {    
                 texts += line.match(regExpTxt);
-                hrefs += line.match(regExpHref); 
-                setTimeout(()=>{
-                    response = {
-                        text : texts,
-                        href : hrefs,
-                        status :''
-                    }
-                }, 1000)     
+                hrefs += line.match(regExpHref);   
             })
 
-            // texts = texts.split(regExpTxt).filter(text => text.length>0); 
+            texts = texts.split(regExpTxt).filter(text => text.length>0); 
             hrefs = hrefs.split(regExpHref).filter(href => href.length>0);
-        
 
-            // http method   
+             // http method   
             hrefs.forEach((href)=>{
                 const hrefStr =href.toString();
                 https.get(hrefStr, (res) => {
-                    statusCod += (res.statusCode).toString();
-                    setTimeout(()=>{
-                        response = {
-                            text : texts,
-                            href : hrefs,
-                            status : statusCod.split(regExpdig).filter(text => text.length>0)
-                        }
-                    }, 1000)  
+                    statusCod += (res.statusCode).toString(); 
                 })
             })
+            setTimeout(()=>{
+                statusCod = statusCod.split(regExpdig).filter(text => text.length>0);
+            }, 1000)
 
-            // Response: [{text}, {href}, {status}]
-            resolve(setTimeout(()=>{
-                console.log(response)}, 
-            2000) );
+            const message = () =>{
+                let txt ='';
+                statusCod.forEach(()=>{
+                    if (statusCod<'400'){
+                        txt = 'ok';
+                    }
+                    else{
+                         txt = 'fail'  
+                    }
+                })
+                return txt;
+            }
+
+             // Validation responses
+            if (options =='--validate'){
+                for(let i=0 ; i< hrefs.length; i++){
+                    setTimeout(()=>{
+                        const constructor = {
+                                text : texts[i],
+                                hrefs : hrefs [i],
+                                status: statusCod[i],
+                                message : message()
+                            }
+                            console.log(constructor);  
+                    }, 3000);
+                }
+            }
+            
+            else {
+                for(let i=0 ; i< hrefs.length; i++){
+                    setTimeout(()=>{
+                        const constructor = {
+                                text : texts[i],
+                                hrefs : hrefs [i],
+                        }
+                            console.log(constructor);  
+                    }, 3000);
+                } 
+            
+            }
+
         })
 
     }) 
 }
-
-
-
-
-
-
-    
    
 
 

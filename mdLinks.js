@@ -1,15 +1,21 @@
 const mdLinks= require('./index.js');
-const path = './README.md';
 const process = require('process');
-let paths = process.argv[2];
-console.log(paths);
+const path = require('path');
 
+const regExpInput = /(\,)/;
 
+const pathWriten = process.argv.slice(2).toString();
+const input = pathWriten.split(regExpInput).filter(pw => pw !== ',');
 
-mdLinks(path);
+const paths = input [0];
+const options= input [1];
 
+const ext = path.extname(paths);
+const extValidate = () =>{
+    return (ext == '.md')? mdLinks(paths, options): console.log('El archivo debe ser tipo .md');
+}
 
-
+(paths!== '')? extValidate() : console.log('Por favor indica un archivo');
 
 
 

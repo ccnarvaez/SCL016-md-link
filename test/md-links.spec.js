@@ -1,6 +1,5 @@
 
-
-const { mdLinks, linesArray, response } = require('../mdLinks.js');
+const { mdLinks, linesArray, path } = require('../mdLinks.js');
 require('node-fetch'); 
 jest.mock('node-fetch'); 
 
