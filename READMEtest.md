@@ -1,0 +1,6 @@
+[if-else](https://www.youtube.com)
+[hola](https://www.wikipedia.org/wiki/Markdown)
+[i-do-not-know](https://www.github.com/)
+[texto comun](https://nodejs.org/api/path.html)
+[pepino](https://es.wikipedia.org/wiki/Markdown)
+[a](https://developer.mozilla.org/en-US/docs/Web/HTTP/Stat)

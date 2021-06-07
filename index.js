@@ -15,19 +15,36 @@ const regExpTxt = /\[([\w\s\d\-]+)\]/g;
 const regExpHref = /\(([^\)]+)\)/g;
 const regExpdig = /(\d{3})/;
 
+
 // Requires
 const fs = require('fs');
 const readline = require('readline');
 const https = require('https');
 
+// Messages ok or fail
+const message = () =>{
+    let txt ='';
+    
+    for (let i=0; i< statusCod.length-1; i++){
 
+        let temp = parseInt(statusCod[i]);
+        if (temp == 200){
+            return txt = 'ok';
+        }
+        else {
+            return txt = 'fail';
+        }
+    }
+        
+}
+
+// Reading md lines, identifying url's and getting links status
 const mdLinks = (path, options) => {
-
+    
     return new Promise ((resolve,reject)=>{
         const input= fs.createReadStream(path);
         const rl= readline.createInterface({
             input,
-            terminal: false
         });
 
         rl.on('line', (line) => { 
@@ -54,19 +71,7 @@ const mdLinks = (path, options) => {
                 statusCod = statusCod.split(regExpdig).filter(text => text.length>0);
             }, 1000)
 
-            const message = () =>{
-                let txt ='';
-                statusCod.forEach(()=>{
-                    if (statusCod<'400'){
-                        txt = 'ok';
-                    }
-                    else{
-                         txt = 'fail'  
-                    }
-                })
-                return txt;
-            }
-
+            
              // Validation responses
             if (options =='--validate'){
                 for(let i=0 ; i< hrefs.length; i++){
@@ -74,6 +79,7 @@ const mdLinks = (path, options) => {
                         const constructor = {
                                 text : texts[i],
                                 hrefs : hrefs [i],
+                                file : route,
                                 status: statusCod[i],
                                 message : message()
                             }
@@ -88,6 +94,7 @@ const mdLinks = (path, options) => {
                         const constructor = {
                                 text : texts[i],
                                 hrefs : hrefs [i],
+                                file : route,
                         }
                             console.log(constructor);  
                     }, 3000);
@@ -99,7 +106,14 @@ const mdLinks = (path, options) => {
 
     }) 
 }
+
+
+
+
    
+
+
+
 
 
 
