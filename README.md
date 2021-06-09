@@ -9,7 +9,7 @@
 ## 1. Resumen
 El siguiente proyecto fue desarrollado con el propósito de leer y validar el status de los links contenido en un archivo tipo markdown (extensión '.md').
 El objetivo general de esta herramienta es la de prestar apoyo en la revisión del status de los links contenidos dentro de un archivo, y que al estar rotos pueden restar valor al contenido.
-La herramienta fue desarrollada usando librerías de nodejs, tales como: Readline, Extname, entre otras.
+La herramienta fue desarrollada usando herramientas de nodejs, tales como: Readline, file system, path, entre otras.
 ## 2. Alcance del proyecto
 Extensión leída
 La app sólo podrá ejecutarse en archivos de extensión '.md'.
@@ -20,6 +20,11 @@ El proyecto fue desarrollado para leer e identificar líneas tipo markdown, es d
         [texto](url)
 
 ## 3. ¿Cómo hacer uso del cli?
+
+INSTALAR MODULO
+El modulo es instalable a través de la siguiente línea de comando:
+
+        npm i scl016-mdlinks-ccnarvaez
 
 FUNCIÓN EJECUTABLE
 

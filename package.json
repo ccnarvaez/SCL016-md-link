@@ -1,8 +1,8 @@
 {
-  "name": "scl016-md-link",
+  "name": "scl016-mdlinks-ccnarvaez",
   "version": "1.0.0",
-  "description": "[if-else](https://www.youtube.com)\r [auyama auyama](https://www.developer.mozilla.org/) \r [hola](https://www.wikipedia.org/wiki/Markdown)\r [i-do-not-know](https://www.github.com/)\r [texto comun](https://youtube.com)\r [pepino](https://es.wikipedia.org/wiki/Markdown)",
-  "main": "index.js",
+  "description": "Modulo para verificar el estatus de links en líneas de formato markdown",
+  "main": "src/index.js",
   "directories": {
     "test": "test"
   },

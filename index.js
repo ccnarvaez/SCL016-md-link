@@ -8,40 +8,25 @@ global.texts = [];
 global.hrefs = [];
 global.statusCod = [];
 global.status = [];
+global.statusTxt = [];
 
 
 // Regular expressions to identify text, url's and status digits
 const regExpTxt = /\[([\w\s\d\-]+)\]/g;
 const regExpHref = /\(([^\)]+)\)/g;
-const regExpdig = /(\d{3})/;
-
+const regExpMsj = /(\*)/g;
 
 // Requires
 const fs = require('fs');
 const readline = require('readline');
 const https = require('https');
 
-// Messages ok or fail
-const message = () =>{
-    let txt ='';
-    
-    for (let i=0; i< statusCod.length-1; i++){
-
-        let temp = parseInt(statusCod[i]);
-        if (temp == 200){
-            return txt = 'ok';
-        }
-        else {
-            return txt = 'fail';
-        }
-    }
-        
-}
 
 // Reading md lines, identifying url's and getting links status
 const mdLinks = (path, options) => {
-    
-    return new Promise ((resolve,reject)=>{
+ 
+   new Promise ((resolve, reject) => {
+
         const input= fs.createReadStream(path);
         const rl= readline.createInterface({
             input,
@@ -52,6 +37,7 @@ const mdLinks = (path, options) => {
         })
 
         rl.on('close', () => {
+            // Separating lines
             linesArray.forEach((line) => {    
                 texts += line.match(regExpTxt);
                 hrefs += line.match(regExpHref);   
@@ -62,13 +48,24 @@ const mdLinks = (path, options) => {
 
              // http method   
             hrefs.forEach((href)=>{
-                const hrefStr =href.toString();
-                https.get(hrefStr, (res) => {
-                    statusCod += (res.statusCode).toString(); 
+                
+                https.get(href.toString(), (res) => {
+                    new Promise ((resolve, reject) => {
+                        statusCod += (res.statusCode+'*').toString();
+                        statusTxt += (res.statusMessage+'*').toString();
+                        resolve(statusCod, statusTxt);
+                        reject ((error) => {
+                            if (error){
+                                throw error;
+                            }
+                        })
+                    })
+                      
                 })
             })
             setTimeout(()=>{
-                statusCod = statusCod.split(regExpdig).filter(text => text.length>0);
+                statusCod = statusCod.split(regExpMsj).filter(text => text.length>1);
+                statusTxt = statusTxt.split(regExpMsj).filter(text => text.length>1);
             }, 1000)
 
             
@@ -81,34 +78,38 @@ const mdLinks = (path, options) => {
                                 hrefs : hrefs [i],
                                 file : route,
                                 status: statusCod[i],
-                                message : message()
+                                message : statusTxt [i],
                             }
-                            console.log(constructor);  
+                            console.log(constructor); 
+                    
                     }, 3000);
                 }
             }
             
             else {
                 for(let i=0 ; i< hrefs.length; i++){
-                    setTimeout(()=>{
-                        const constructor = {
-                                text : texts[i],
-                                hrefs : hrefs [i],
-                                file : route,
-                        }
-                            console.log(constructor);  
-                    }, 3000);
+            
+                    const constructor = {
+                            text : texts[i],
+                            hrefs : hrefs [i],
+                            file : route,
+                    }
+                    console.log(constructor);  
                 } 
             
             }
-
         })
+        // Promise resolved
+            resolve(constructor);
+
+            reject ((error) =>{
+                if(error){
+                    throw error;
+                }
+        }) 
 
     }) 
 }
-
-
-
 
    
 
